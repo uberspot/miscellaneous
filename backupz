@@ -21,7 +21,7 @@ done
 
 #decompress with tar -xzpf 
 
-chown root:code $backup_dir/$prefix*
+chown root:wheel $backup_dir/$prefix*
 chmod o-rwx $backup_dir/$prefix*
 
 if [ -e "$backup_dir2" ]; then

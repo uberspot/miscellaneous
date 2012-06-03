@@ -22,5 +22,5 @@ fi
 
 /usr/bin/mysqldump -u root --password=${PASSWD} -c --opt $DB | bzip2 -z9 > $BACKUP_DIR/${DB}--${OUTPUT}.sql.bz2
 /bin/chmod 640 $BACKUP_DIR/${DB}--${OUTPUT}.sql.bz2
-/bin/chown root:code $BACKUP_DIR/${DB}--${OUTPUT}.sql.bz2
+/bin/chown root:wheel $BACKUP_DIR/${DB}--${OUTPUT}.sql.bz2
 
