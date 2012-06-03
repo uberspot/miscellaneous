@@ -1,0 +1,26 @@
+#!/bin/bash
+#A simple script to check for vulnerable types of files.
+#Usage: ./checkfiles dir
+
+if [[ $# -gt 1 ||  $# -eq 0 ]]
+then 
+  echo "Please provide a directory for scanning."
+  exit 0
+fi
+
+echo "Searching for possibly unwanted SUID and SGID binaries"
+#See all set user id files:
+echo "SUID files:"
+find $1 -perm +4000
+# See all group id files
+echo "SGID files:"
+find $1 -perm +2000
+
+#Find all world writable and sticky bits set files
+echo "World writable files:"
+find $1 -xdev -type d \( -perm -0002 -a ! -perm -1000 \) -print
+
+#Find files that do not belong to a valid user and a valid group
+echo "No Owner files:"
+find $1 -xdev \( -nouser -o -nogroup \) -print
+

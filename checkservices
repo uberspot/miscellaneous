@@ -1,0 +1,48 @@
+#!/bin/bash
+#Checks given services to see if they are up and restarts them if necessary
+
+LOGFILE=/var/log/services.log
+SERVICEDIR=/etc/rc.d
+
+log()
+{
+	#echo "$@"
+	echo "`date` $@" >> $LOGFILE
+	#/usr/bin/logger -f $LOGFILE  > /dev/null 2>&1
+}
+
+
+############     CHECK SERVICES    ############
+
+
+#Declare the service array
+declare -a SERVICENAMES
+SERVICENAMES=("vsftpd" "sshd" "httpd" "ntpd" "znc")
+SERVICECOUNT=${#SERVICENAMES[@]}
+
+#Get running service names through netstat. (Could use ports here)
+RUNNING=$(/bin/netstat -tulpn |  cut -d'/' -f2 | cut -d':' -f1)
+ 
+
+	for ((i=0; i < $SERVICECOUNT; i++)); 
+	do
+		down=1
+		for current in $RUNNING
+		do
+		    if [ ${SERVICENAMES[${i}]} == "$current" ]
+		    then
+		       #log "${SERVICENAMES[${i}]} is up."
+		       down=0
+		       break
+			fi
+		done
+		if [ $down -eq 1 ]
+		then
+			 log "${SERVICENAMES[${i}]} is down."
+			 log  "Restarting ${SERVICENAMES[${i}]} service..."
+			 $SERVICEDIR/${SERVICENAMES[${i}]} start > /dev/null 2>&1
+		fi
+
+	done
+
+
