@@ -4,27 +4,27 @@
 (( $UID )) && { echo 'you need to be root to run this script'; exit 1; }
 
 prefix="system_backup_"
-data="/etc /home /root /var/www /var/log /var/lib/znc /var/spool/mail /srv/deluge/.config /usr/sbin"
+data="/etc /home /root /var/log /var/spool/mail /usr/sbin /usr/share/themes /boot/syslinux"
 backup_dir="/var/backups"
 
 #If backup_dir2 is uncommented the two directories will be synced
 #backup_dir2="/var/backups2"
 
-num_of_backups=5
+num_of_backups=2
 
 while [ $(ls -1 $backup_dir | grep $prefix* | wc -l) -ge $num_of_backups ]; 
 do
   rm $(ls -1t $backup_dir/$prefix* | tail -1)
 done
 
-/bin/tar -cpzf $backup_dir/$prefix`date +%F-%R`.tar.gz $data  > /dev/null 2>&1
+/bin/nice -n 17 /bin/tar -cpzf $backup_dir/$prefix`date +%F-%R`.tar.gz $data > /dev/null 2>&1
 
-#decompress with tar -xzpf 
+#decompress with tar -xzpf  
 
-chown root:wheel $backup_dir/$prefix*
+chown root:code $backup_dir/$prefix*
 chmod o-rwx $backup_dir/$prefix*
 
 if [ -e "$backup_dir2" ]; then
-      rsync -az --delete $backup_dir/ $backup_dir2/ > /dev/null 2>&1
+        /bin/nice -17 /usr/bin/rsync -aAXv --delete $backup_dir/ $backup_dir2/ > /dev/null 2>&1
 fi
 
