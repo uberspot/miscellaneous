@@ -37,8 +37,10 @@ while [ $# -ge 1 ]; do
                         shift
                         ;;
         esac
+
         shift
 done
+
 
 if [ -z "$backup_dir" ]; then
      backup_dir="/var/backups/rootfs"
@@ -52,12 +54,22 @@ if [ -z "$password" ]; then
      password="S0m3P4ss!"
 fi
 
+
 echo "Syncing / to $backup_dir..."
 
 /bin/nice -n 17 /usr/bin/rsync --delete -aAXv /* $backup_dir --exclude={/dev/*,/proc/*,/sys/*,/tmp/*,/run/*,/mnt/*,/media/*,/lost+found,$backup_dir,/home/*/Dropbox/*,/home/*/.cache/*,/var/lib/pacman/sync/*,/var/log/journal/*,/home/*/.thumbnails/*,/home/*/.mozilla/firefox/*.default/Cache/*,/home/*/.cache/chromium/*,/home/*/.bitcoin/blocks/*,/home/*/.litecoin/blocks/*,/home/*/.feathercoin/blk*,/home/*/.dogecoin/blk*,/home/*/.android/avd/*} > /dev/null 2>&1
 
+
+
+echo "Saving installed packages to $backup_dir/(aur)pkglist.txt"
+
+pacman -Qqen > $backup_dir/pkglist.txt
+pacman -Qqem > $backup_dir/aurpkglist.txt
+
 if [ -z "$no_tar" ]; then
     echo "Creating tarball in $backup_dir_tar..."
+
+    /usr/lib/systemd/scripts/pakbak
 
     # make a tarball from the backed up dir
     /bin/nice -n 17 /bin/tar -cpzf - $backup_dir | openssl enc -aes-256-cbc -e -pass pass:$password > $backup_dir_tar/system_backup.tar.gz.enc
