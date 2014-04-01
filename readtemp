@@ -1,0 +1,5 @@
+#!/bin/bash
+# Reads outloud cpu temp
+percentage=$(cat /sys/bus/acpi/devices/LNXTHERM\:00/thermal_zone/temp)
+let "percentage=$percentage/1000" 
+espeak "$percentage degrees Celsius"
