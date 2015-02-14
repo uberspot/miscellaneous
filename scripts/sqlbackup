@@ -8,15 +8,15 @@ BACKUP_DIR="/var/backups"  # directory to save backup
 
 # DO NOT EDIT BELOW THIS LINE
 DB=$1
-OUTPUT=`date +%F-%R`
+OUTPUT=$(date +%F-%R)
 
 
 ls $BACKUP_DIR/${DB}*.sql.bz2 > /dev/null 2>&1
 
 if (($? == 0)); then
-        COUNT=`ls $BACKUP_DIR/${DB}*.sql.bz2 | wc -l`;
+    COUNT=$(ls $BACKUP_DIR/${DB}*.sql.bz2 | wc -l);
         if (($COUNT >= $COPIES)); then
-                rm `ls -1 $BACKUP_DIR/${DB}*.sql.bz2 | head -n1`;
+            rm $(ls -1 $BACKUP_DIR/${DB}*.sql.bz2 | head -n1);
         fi
 fi
 

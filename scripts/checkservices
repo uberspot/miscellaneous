@@ -7,7 +7,7 @@ SERVICEDIR=/etc/rc.d
 log()
 {
 	#echo "$@"
-	echo "`date` $@" >> $LOGFILE
+    echo "$(date) $* " >> $LOGFILE
 	#/usr/bin/logger -f $LOGFILE  > /dev/null 2>&1
 }
 
