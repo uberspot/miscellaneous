@@ -1,0 +1,18 @@
+#!/bin/bash
+
+DIR=/media/stick/backups
+
+# Check if backup directory exists
+if [ ! -d "$DIR" ];
+then
+    echo "Backup directory $DIR doesn't exist, creating it now!"
+    mkdir $DIR
+fi
+
+# First sync disks
+sync; sync
+
+dd bs=1M conv=sync,noerror iflag=fullblock if=/dev/sdx | gzip > $DIR/image.gz
+
+# restore
+# gzip -dc /path/to/image.gz | dd of=/dev/sdx·
